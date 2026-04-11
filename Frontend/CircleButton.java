@@ -1,13 +1,15 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class CircleButton extends JButton {
 
-	private static final long serialVersionUID=1L;
-	
+    private static final long serialVersionUID = 1L;
+
     private boolean isHovered = false;
+    private float scale = 1.0f;
+    private Color primaryColor = new Color(39, 174, 96); // Emerald Green
+    private Color secondaryColor = new Color(123, 237, 159); // Mint Tea
 
     public CircleButton(String text) {
         super(text);
@@ -17,20 +19,22 @@ public class CircleButton extends JButton {
         setBorderPainted(false);
         setOpaque(false);
 
-        setForeground(Color.BLACK);
-        setFont(new Font("Arial", Font.BOLD, 14));
+        setForeground(Color.WHITE);
+        setFont(new Font("Segoe UI", Font.BOLD, 18));
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        setHorizontalAlignment(SwingConstants.CENTER);
-
-        // Hover detection
         addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
+                scale = 1.1f;
                 repaint();
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
+                scale = 1.0f;
                 repaint();
             }
         });
@@ -38,56 +42,52 @@ public class CircleButton extends JButton {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+        int width = getWidth();
+        int height = getHeight();
 
-        int lift = isHovered ? -3 : 0; // slight upward movement
+        // Scaling effect
+        double xOffset = (width * (1 - scale)) / 2;
+        double yOffset = (height * (1 - scale)) / 2;
+        g2.translate(xOffset, yOffset);
+        g2.scale(scale, scale);
 
-        // 🔥 Shadow (depth)
-        g2.setColor(new Color(0, 0, 0, 70));
-        g2.fillOval(6, 10, getWidth() - 8, getHeight() - 8);
+        // Subtle Shadow
+        g2.setColor(new Color(0, 0, 0, 50));
+        g2.fillOval(4, 6, width - 8, height - 8);
 
-        // 🤍 Pure white button
+        // Gradient Background
+        GradientPaint gradient = new GradientPaint(0, 0, isHovered ? secondaryColor : primaryColor,
+                0, height, isHovered ? primaryColor : secondaryColor);
+        g2.setPaint(gradient);
+        g2.fillOval(0, 0, width - 8, height - 8);
+
+        // Glossy Highlight
+        g2.setPaint(new GradientPaint(0, 0, new Color(255, 255, 255, 100), 
+                                      0, height / 2, new Color(255, 255, 255, 0)));
+        g2.fillOval(width / 4, 4, width / 2, height / 3);
+
+        // White Border
         g2.setColor(Color.WHITE);
-        g2.fillOval(lift, lift, getWidth(), getHeight());
-
-        // ✨ Glossy highlight
-        g2.setColor(new Color(255, 255, 255, 120));
-        g2.fillOval(lift + 5, lift + 5, getWidth() - 10, getHeight() / 2);
-
-        // Border
-        g2.setColor(new Color(200, 200, 200));
         g2.setStroke(new BasicStroke(2));
-        g2.drawOval(lift, lift, getWidth() - 1, getHeight() - 1);
+        g2.drawOval(2, 2, width - 12, height - 12);
 
-        // Glow on hover
-        if (isHovered) {
-            g2.setColor(new Color(255, 255, 255, 150));
-            g2.setStroke(new BasicStroke(3));
-            g2.drawOval(lift, lift, getWidth() - 1, getHeight() - 1);
-        }
-
-        // 📝 Centered text
+        // Centered Text
         FontMetrics fm = g2.getFontMetrics();
-        int x = (getWidth() - fm.stringWidth(getText())) / 2;
-        int y = (getHeight() + fm.getAscent()) / 2 - 3;
+        int textX = (width - 8 - fm.stringWidth(getText())) / 2;
+        int textY = (height - 8 + fm.getAscent()) / 2 - 2;
 
-        g2.setColor(Color.BLACK);
-        g2.drawString(getText(), x, y);
-    }
+        g2.setColor(Color.WHITE);
+        g2.drawString(getText(), textX, textY);
 
-    @Override
-    protected void paintBorder(Graphics g) {
-        // no default border
+        g2.dispose();
     }
 
     @Override
     public boolean contains(int x, int y) {
         int radius = getWidth() / 2;
-        int centerX = radius;
-        int centerY = radius;
-        return Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2) <= Math.pow(radius, 2);
+        return Math.pow(x - radius, 2) + Math.pow(y - radius, 2) <= Math.pow(radius, 2);
     }
-}
+}

@@ -22,39 +22,43 @@ public class LevelPage extends JFrame {
             }
         };
 
-        panel.setLayout(null); // absolute positioning
+        panel.setLayout(null);
         GlassPanel glass = new GlassPanel();
-        glass.setBounds(80, 220, 1150, 240);
+        glass.setBounds(100, 200, 1100, 300);
         panel.add(glass);
+
+        JLabel selectTitle = new JLabel("Eco Odyssey Map 🗺️", SwingConstants.CENTER);
+        selectTitle.setFont(new Font("Segoe UI", Font.BOLD, 42));
+        selectTitle.setForeground(Color.WHITE);
+        selectTitle.setBounds(0, 80, 1366, 60); // Shifted down
+        panel.add(selectTitle);
+
         int[][] positions = {
-                { 120, 320 }, // 1
-                { 220, 350 }, // 2
-                { 340, 300 }, // 3
-                { 460, 260 }, // 4
-                { 600, 220 }, // 5
-                { 740, 240 }, // 6
-                { 860, 270 }, // 7
-                { 960, 320 }, // 8
-                { 1040, 360 }, // 9
-                { 1120, 320 } // 10
+                { 120, 350 }, // 1 (Shifted right)
+                { 220, 380 }, // 2
+                { 340, 330 }, // 3
+                { 460, 290 }, // 4
+                { 600, 250 }, // 5
+                { 740, 270 }, // 6
+                { 860, 300 }, // 7
+                { 960, 350 }, // 8
+                { 1040, 390 }, // 9
+                { 1120, 350 } // 10
         };
 
+
+
         for (int i = 0; i < 10; i++) {
-
             JButton levelBtn = new CircleButton("" + (i + 1));
-
-            int x = positions[i][0] - 80;
-            int y = positions[i][1] - 220;
-
-            levelBtn.setBounds(x, y, 70, 70);
-
+            int x = positions[i][0] - 100;
+            int y = positions[i][1] - 200;
+            levelBtn.setBounds(x, y, 75, 75);
             int level = i + 1;
 
             levelBtn.addActionListener(e -> {
                 dispose();
                 new QuizPage(level);
             });
-
             glass.add(levelBtn);
         }
         add(panel);
@@ -62,24 +66,28 @@ public class LevelPage extends JFrame {
     }
 
     class GlassPanel extends JPanel {
-    	
-    	private static final long serialVersionUID=1L;
+        private static final long serialVersionUID = 1L;
         public GlassPanel() {
             setOpaque(false);
-            setLayout(null); // IMPORTANT for absolute positioning
+            setLayout(null);
         }
 
+        @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g;
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // semi-transparent white blur effect
-            g2.setColor(new Color(255, 255, 255, 200));
+            // Glass background
+            g2.setColor(new Color(255, 255, 255, 160));
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
 
+            // Subtle border
+            g2.setColor(new Color(255, 255, 255, 200));
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 40, 40);
+
+            g2.dispose();
             super.paintComponent(g);
         }
     }
-}
+}

@@ -14,92 +14,100 @@ public class ResultPage extends JFrame {
 
         getContentPane().setBackground(new Color(232, 245, 233));
         
-        double percent=(score/50.0)*100.0;
-        boolean clear=percent>=70;
+        double percent = (score / 50.0) * 100.0;
+        boolean clear = percent >= 70;
 
         JLabel scoreLabel = new JLabel("Your Score: " + score);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        scoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        scoreLabel.setForeground(new Color(27, 94, 32));
         scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        JLabel percentLabel = new JLabel("Percentage: " + percent + "%");
-        percentLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+        JLabel percentLabel = new JLabel("Accuracy: " + percent + "%");
+        percentLabel.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 24));
+        percentLabel.setForeground(new Color(56, 142, 60));
         percentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
-        // 🏴‍☠️ Pirate Image
-        ImageIcon pirateIcon = new ImageIcon("assets/pirate.jpeg");
-
-        if (pirateIcon.getIconWidth() == -1) {
-            System.out.println("Image not found!");
-        }
-
-        Image img = pirateIcon.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
+        ImageIcon pirateIcon = new ImageIcon(getClass().getResource("/assets/pirate.jpeg"));
+        Image img = pirateIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         JLabel pirateLabel = new JLabel(new ImageIcon(img));
         pirateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        /*JLabel badge = new JLabel(
-                score >= 2 ? "Captain of Sustainability!"
-                        : score >= 1 ? "Eco Explorer!"
-                                : "Land in Danger!");*/
-        JLabel badge=new JLabel(clear ? "Level Cleared! Next Level Unlocked": "Score below 70%. Try Again");
-        badge.setFont(new Font("Arial", Font.PLAIN, 18));
+        JLabel badge = new JLabel("<html><center>" + (clear ? "Level Cleared! 🎉<br>Next Destination Unlocked" : "Commitment is Key!<br>Score below 70%. Try Again") + "</center></html>");
+        badge.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        badge.setForeground(new Color(60, 30, 10));
         badge.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton Btn = new RoundedButton(clear ? "Next Level":"Retry Level");
-        Btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Btn.addActionListener(e -> 
-        {
-        	dispose();
-        
-        if(clear)
-        {
-           if(level<10)
-        	  new QuizPage(level+1);
-           else
-           {
-             JOptionPane.showMessageDialog(this,"All Levels Completed!");
-             new LevelPage();
-           }
-        }
-        else
-        {
-          new QuizPage(level);
-        }
+        JButton nextBtn = new RoundedButton(clear ? "Continue Adventure" : "Retry Mission");
+        nextBtn.setMaximumSize(new Dimension(300, 50));
+        nextBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nextBtn.addActionListener(e -> {
+            dispose();
+            if (clear) {
+                if (level < 10) new QuizPage(level + 1);
+                else {
+                    JOptionPane.showMessageDialog(this, "Master of Sustainability! All Levels Complete! 🌱");
+                    new LevelPage();
+                }
+            } else {
+                new QuizPage(level);
+            }
         });
-        
-        JButton exitBtn = new RoundedButton("Exit");
+
+        JButton exitBtn = new RoundedButton("Exit to Hub");
+        exitBtn.setMaximumSize(new Dimension(300, 50));
         exitBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        exitBtn.addActionListener(e -> System.exit(0));
+        exitBtn.addActionListener(e -> {
+            dispose();
+            new WelcomePage(true);
+        });
 
-        // 🔥 CENTER PANEL
-        JPanel mainPanel = new JPanel();
-        mainPanel.setBackground(new Color(232, 245, 233));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        // Score Card (Plain Transparent Panel now)
+        JPanel scoreCard = new JPanel();
+        scoreCard.setOpaque(false);
+        scoreCard.setLayout(new BoxLayout(scoreCard, BoxLayout.Y_AXIS));
+        scoreCard.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        scoreCard.setMaximumSize(new Dimension(500, 600));
 
-        mainPanel.add(Box.createVerticalGlue());
+        // Center labels horizontally
+        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        percentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        badge.setHorizontalAlignment(SwingConstants.CENTER);
 
-        mainPanel.add(scoreLabel);
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(percentLabel);
-        mainPanel.add(Box.createVerticalStrut(25));
-        mainPanel.add(pirateLabel);
-        mainPanel.add(Box.createVerticalStrut(25));
-        mainPanel.add(badge);
-        mainPanel.add(Box.createVerticalStrut(20));
-        mainPanel.add(Btn);
-        mainPanel.add(Box.createVerticalStrut(20));
-        mainPanel.add(exitBtn);
+        scoreCard.add(scoreLabel);
+        scoreCard.add(Box.createVerticalStrut(10));
+        scoreCard.add(percentLabel);
+        scoreCard.add(Box.createVerticalStrut(20));
+        scoreCard.add(pirateLabel);
+        scoreCard.add(Box.createVerticalStrut(20));
+        scoreCard.add(badge);
+        scoreCard.add(Box.createVerticalStrut(30));
+        scoreCard.add(nextBtn);
+        scoreCard.add(Box.createVerticalStrut(15));
+        scoreCard.add(exitBtn);
 
-        mainPanel.add(Box.createVerticalGlue());
-
-        ImagePanel bgPanel = new ImagePanel("assets/scroll.png");
+        // Background Panel
+        ImagePanel bgPanel = new ImagePanel("/assets/scroll.png");
         bgPanel.setLayout(new GridBagLayout());
-
-        mainPanel.setOpaque(false); // 🔥 important
-
-        bgPanel.add(mainPanel);
+        bgPanel.add(scoreCard);
 
         add(bgPanel);
-        setVisible(true); // 🔥 THIS WAS MISSING
+        setVisible(true);
+    }
+
+    class ImagePanel extends JPanel {
+        private static final long serialVersionUID = 1L;
+        private Image image;
+        public ImagePanel(String path) {
+            image = new ImageIcon(getClass().getResource(path)).getImage();
+        }
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (image != null) {
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+            }
+        }
     }
 }
+
+

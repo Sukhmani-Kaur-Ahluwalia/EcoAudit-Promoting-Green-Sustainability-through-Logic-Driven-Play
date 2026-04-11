@@ -22,24 +22,27 @@ public class AboutPage extends JFrame {
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font("Serif", Font.BOLD, 17));
+        textArea.setFont(new Font("Segoe UI", Font.BOLD, 18));
         textArea.setForeground(Color.WHITE);
         textArea.setOpaque(false);
 
         JPanel textWrapper = new JPanel(new BorderLayout());
         textWrapper.setOpaque(false);
-        textWrapper.setBorder(BorderFactory.createEmptyBorder(120, 80, 60, 80));
+        textWrapper.setBorder(BorderFactory.createEmptyBorder(120, 100, 60, 100));
         textWrapper.add(textArea, BorderLayout.CENTER);
 
-        JButton backBtn = new JButton("← Back");
+        JButton backBtn = new RoundedButton("← Back to Hub");
+        backBtn.setPreferredSize(new Dimension(200, 45));
         backBtn.addActionListener(e -> {
             dispose();
-            new WelcomePage(true); // 🔥 FIXED
+            new WelcomePage(true);
         });
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setOpaque(false);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
         bottomPanel.add(backBtn);
+
 
         card.add(textWrapper, BorderLayout.CENTER);
         card.add(bottomPanel, BorderLayout.SOUTH);

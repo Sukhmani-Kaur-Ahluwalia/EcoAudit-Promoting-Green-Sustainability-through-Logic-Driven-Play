@@ -30,16 +30,37 @@ public class TestDB {
 				questions.add(new Question(rs.getString("question"), 
 			new String[] {rs.getString("option_a"),rs.getString("option_b"),rs.getString("option_c"),rs.getString("option_d")}, 
 			new int[] {rs.getInt("points_a"),rs.getInt("points_b"),rs.getInt("points_c"),rs.getInt("points_d")}));
-				
-                //System.out.println(rs.getString("question"));
             }
 		}
 		catch(Exception e)
 		{
-		  e.printStackTrace();
+            System.out.println("⚠️ Database connection failed. Loading sample questions for demonstration...");
+            // Fallback for Level 1 Sample Questions
+            if (level == 1) {
+                questions.add(new Question("Do you recycle waste?", 
+                    new String[]{"Always", "Sometimes", "Rarely", "Never"}, 
+                    new int[]{10, 5, 2, 0}));
+                questions.add(new Question("How do you save water?", 
+                    new String[]{"Turn off tap", "Use bucket", "Short showers", "I don't"}, 
+                    new int[]{10, 10, 8, 0}));
+                questions.add(new Question("Use public transport?", 
+                    new String[]{"Often", "Weekly", "Monthly", "Never"}, 
+                    new int[]{10, 7, 3, 0}));
+                questions.add(new Question("Plant trees?", 
+                    new String[]{"Every year", "Once", "Never", "Plan to"}, 
+                    new int[]{10, 8, 0, 5}));
+                questions.add(new Question("Save energy?", 
+                    new String[]{"Lights off", "Solar panels", "Always on", "Sometimes off"}, 
+                    new int[]{8, 10, 0, 5}));
+            } else {
+                questions.add(new Question("Sample Question for Level " + level, 
+                    new String[]{"Great Option", "Good Option", "Okay Option", "Bad Option"}, 
+                    new int[]{10, 7, 4, 0}));
+            }
 		}
 		return questions;
 	}
+
 	
    /* public static void main(String[] args) {
         try {
