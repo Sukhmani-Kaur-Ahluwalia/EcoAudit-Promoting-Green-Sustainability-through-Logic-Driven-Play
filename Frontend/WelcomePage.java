@@ -112,6 +112,12 @@ public class WelcomePage extends JFrame {
         signup.setCursor(new Cursor(Cursor.HAND_CURSOR));
         signup.setForeground(new Color(33, 150, 243));
         signup.setAlignmentX(Component.CENTER_ALIGNMENT);
+        signup.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                dispose();
+                new RegisterPage();
+            }
+        });
 
         GlassPanel content = new GlassPanel();
         content.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -147,9 +153,12 @@ public class WelcomePage extends JFrame {
         }
 
         signInBtn.addActionListener(e -> {
+            String user = username.getText().trim();
             String pass = new String(password.getPassword());
 
-            if (pass.equals("1234")) {
+            boolean ok = pass.equals("1234") || RegisterPage.validateLogin(user, pass);
+
+            if (ok) {
                 statusMsg.setText("Login Successful ✅");
                 statusMsg.setForeground(new Color(46, 125, 50));
                 

@@ -3,3 +3,5 @@ bin/
 .vscode/
 .idea/
 *.jar
+users.json
+Frontend/build.bat

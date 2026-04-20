@@ -1,6 +1,16 @@
-CREATE DATABASE eco_audit;
+CREATE DATABASE IF NOT EXISTS eco_audit;
 USE eco_audit;
-CREATE TABLE eco_audit_questions (
+
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+    login_id   VARCHAR(50)  PRIMARY KEY,
+    password   VARCHAR(100) NOT NULL,
+    total_score INT         DEFAULT 0,
+    level       INT         DEFAULT 1,
+    badges      JSON
+);
+
+CREATE TABLE IF NOT EXISTS eco_audit_questions (
     id INT PRIMARY KEY,
     question TEXT,
     option_a TEXT,
